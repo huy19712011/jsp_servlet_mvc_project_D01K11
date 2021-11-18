@@ -6,22 +6,22 @@ package jdbc;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import javax.annotation.Resource;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
-import java.sql.*;
 
 /**
  *
  * @author huynq
  */
-public class JdbcTestServlet extends HttpServlet {
-
-    @Resource(name = "jdbc/web_student_tracker")
-    private DataSource dataSource;
+@WebServlet(name = "JdbcTestServletWithoutXML", urlPatterns = {"/JdbcTestServletWithoutXML"})
+public class JdbcTestServletWithoutXML extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -44,7 +44,7 @@ public class JdbcTestServlet extends HttpServlet {
 
         try {
 
-            myConn = dataSource.getConnection();
+            myConn = DatabaseConnectionPoolManager.getConnection();
 
             myStmt = myConn.createStatement();
 
@@ -62,7 +62,9 @@ public class JdbcTestServlet extends HttpServlet {
 
 
         } catch (Exception e) {
-            System.out.println("error");
+
+            e.printStackTrace();
+
         } finally {
 
             // close all
@@ -84,6 +86,8 @@ public class JdbcTestServlet extends HttpServlet {
                 // ignore
             }
         }
+
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
