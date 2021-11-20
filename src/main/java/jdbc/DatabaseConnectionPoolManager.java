@@ -21,7 +21,7 @@ public class DatabaseConnectionPoolManager {
         dataSource.setUsername("admin");
         dataSource.setPassword("123456");
 
-        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver"); // 5 <> 8
 
         dataSource.setMinIdle(5);
         dataSource.setMaxIdle(10);
