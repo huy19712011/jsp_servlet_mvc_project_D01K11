@@ -55,8 +55,24 @@ public class StudentControllerServlet extends HttpServlet {
             throws ServletException, IOException {
 
         try {
+            // read "command" parameter
+            String theCommand = request.getParameter("command");
 
-            listStudents(request, response);
+            //
+            if (theCommand == null) theCommand = "LIST"; // get all
+
+            switch (theCommand) {
+
+                case "LIST":
+                   listStudents(request, response);
+                   break;
+                case "ADD":
+                   addStudent(request, response);
+                   break;
+            }
+
+
+
 
         } catch (Exception ex) {
 
@@ -115,5 +131,23 @@ public class StudentControllerServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
+    private void addStudent(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+
+        // read student info from form
+        String firstName = request.getParameter("firstName");
+        String lastName = request.getParameter("lastName");
+        String email = request.getParameter("email");
+
+        Student theStudent = new Student(firstName, lastName, email);
+
+        // add student to database
+        studentDbUtil.addStudent(theStudent);
+
+        // send back to main page
+        listStudents(request, response);
+
+    }
 
 }

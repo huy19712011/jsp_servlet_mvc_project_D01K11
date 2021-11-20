@@ -58,10 +58,10 @@ public class StudentDbUtil {
             }
 
             return students;
-            
+
         } finally {
 
-                        // close all
+            // close all
             if (myRs != null) try {
                 myRs.close();
             } catch (SQLException e) {
@@ -79,6 +79,49 @@ public class StudentDbUtil {
             } catch (SQLException e) {
                 // ignore
             }
+        }
+
+    }
+
+    public void addStudent(Student theStudent) throws Exception {
+
+        Connection myConn = null;
+        PreparedStatement myStmt = null;
+
+        try {
+
+            // get connection
+            myConn = dataSource.getConnection();
+
+            // sql
+            String sql = "INSERT INTO student "
+                    + "(first_name, last_name, email) "
+                    + "values (?, ?, ?)";
+
+            myStmt = myConn.prepareStatement(sql);
+
+            // set params values
+            myStmt.setString(1, theStudent.getFirstName());
+            myStmt.setString(2, theStudent.getLastName());
+            myStmt.setString(3, theStudent.getEmail());
+
+            myStmt.execute();
+
+        } finally {
+
+            // close all
+            if (myStmt != null) try {
+                myStmt.close();
+            } catch (SQLException e) {
+                // ignore
+            }
+
+            if (myConn != null) try {
+                myConn.close();
+            } catch (SQLException e) {
+                // ignore
+            }
+
         }
 
     }
