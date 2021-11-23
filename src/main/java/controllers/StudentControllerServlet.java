@@ -69,6 +69,12 @@ public class StudentControllerServlet extends HttpServlet {
                 case "ADD":
                    addStudent(request, response);
                    break;
+                case "LOAD":
+                   loadStudent(request, response);
+                   break;
+                case "UPDATE":
+                   updateStudent(request, response);
+                   break;
             }
 
 
@@ -147,6 +153,42 @@ public class StudentControllerServlet extends HttpServlet {
 
         // send back to main page
         //listStudents(request, response);
+        response.sendRedirect(request.getContextPath() + "/StudentControllerServlet?command=LIST");
+
+    }
+
+    private void loadStudent(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        // read student id from form data
+        String theStudentId = request.getParameter("studentId");
+
+        // get student from db
+        Student theStudent = studentDbUtil.getStudent(theStudentId);
+
+        // place student in request attribute
+        request.setAttribute("THE_STUDENT", theStudent);
+
+        // send to .jsp
+        RequestDispatcher dispatcher = request.getRequestDispatcher("views/update-student-form.jsp");
+
+        dispatcher.forward(request, response);
+
+    }
+
+    private void updateStudent(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        // read info from form
+        int id = Integer.parseInt(request.getParameter("studentId"));
+        String firstName = request.getParameter("firstName");
+        String lastName = request.getParameter("lastName");
+        String email = request.getParameter("email");
+
+        Student theStudent = new Student(id, firstName, lastName, email);
+
+        // update on database
+        studentDbUtil.updateStudent(theStudent);
+
+        // back to list
         response.sendRedirect(request.getContextPath() + "/StudentControllerServlet?command=LIST");
 
     }

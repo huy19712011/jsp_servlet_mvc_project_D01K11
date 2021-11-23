@@ -101,23 +101,101 @@ public class StudentDbUtil {
 
     private void close(Connection myConn, Statement myStmt, ResultSet myRs) {
 
-            // close all
-            if (myRs != null) try {
-                myRs.close();
-            } catch (SQLException e) {
-                // ignore
+        // close all
+        if (myRs != null) try {
+            myRs.close();
+        } catch (SQLException e) {
+            // ignore
+        }
+
+        if (myStmt != null) try {
+            myStmt.close();
+        } catch (SQLException e) {
+            // ignore
+        }
+
+        if (myConn != null) try {
+            myConn.close();
+        } catch (SQLException e) {
+            // ignore
+        }
+    }
+
+    public Student getStudent(String theStudentId) throws Exception {
+
+        Student theStudent = null;
+
+        Connection myConn = null;
+        PreparedStatement myStmt = null;
+        ResultSet myRs = null;
+
+        int studentId;
+
+        try {
+
+            // convert id
+            studentId = Integer.parseInt(theStudentId);
+
+            // get connection
+            myConn = dataSource.getConnection();
+
+            // sql
+            String sql = "SELECT * FROM student WHERE id=?";
+
+            myStmt = myConn.prepareStatement(sql);
+
+            // set params
+            myStmt.setInt(1, studentId);
+
+            // execute query
+            myRs = myStmt.executeQuery();
+
+            // retrieve data
+            if (myRs.next()) {
+
+                String firstName = myRs.getString("first_name");
+                String lastName = myRs.getString("last_name");
+                String email = myRs.getString("email");
+
+                theStudent = new Student(studentId, firstName, lastName, email);
+
+            } else {
+
+                throw new Exception("Could not find student id: " + studentId);
             }
 
-            if (myStmt != null) try {
-                myStmt.close();
-            } catch (SQLException e) {
-                // ignore
-            }
+        } finally {
 
-            if (myConn != null) try {
-                myConn.close();
-            } catch (SQLException e) {
-                // ignore
-            }
+            close(myConn, myStmt, myRs);
+        }
+
+        return theStudent;
+    }
+
+    public void updateStudent(Student theStudent) throws Exception {
+
+        Connection myConn = null;
+        PreparedStatement myStmt = null;
+
+        try {
+
+            myConn = dataSource.getConnection();
+
+            // sql
+            String sql = "UPDATE student SET first_name=?, last_name=?, email=? WHERE id=?";
+
+            myStmt = myConn.prepareStatement(sql);
+            myStmt.setString(1, theStudent.getFirstName());
+            myStmt.setString(2, theStudent.getLastName());
+            myStmt.setString(3, theStudent.getEmail());
+            myStmt.setInt(4, theStudent.getId());
+
+            myStmt.execute();
+
+        } finally {
+
+            close(myConn, myStmt, null);
+        }
+
     }
 }
