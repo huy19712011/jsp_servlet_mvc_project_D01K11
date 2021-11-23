@@ -146,7 +146,8 @@ public class StudentControllerServlet extends HttpServlet {
         studentDbUtil.addStudent(theStudent);
 
         // send back to main page
-        listStudents(request, response);
+        //listStudents(request, response);
+        response.sendRedirect(request.getContextPath() + "/StudentControllerServlet?command=LIST");
 
     }
 

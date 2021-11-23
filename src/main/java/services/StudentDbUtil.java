@@ -61,24 +61,8 @@ public class StudentDbUtil {
 
         } finally {
 
-            // close all
-            if (myRs != null) try {
-                myRs.close();
-            } catch (SQLException e) {
-                // ignore
-            }
+            close(myConn, myStmt, myRs);
 
-            if (myStmt != null) try {
-                myStmt.close();
-            } catch (SQLException e) {
-                // ignore
-            }
-
-            if (myConn != null) try {
-                myConn.close();
-            } catch (SQLException e) {
-                // ignore
-            }
         }
 
     }
@@ -109,7 +93,21 @@ public class StudentDbUtil {
 
         } finally {
 
+            close(myConn, myStmt, null);
+
+        }
+
+    }
+
+    private void close(Connection myConn, Statement myStmt, ResultSet myRs) {
+
             // close all
+            if (myRs != null) try {
+                myRs.close();
+            } catch (SQLException e) {
+                // ignore
+            }
+
             if (myStmt != null) try {
                 myStmt.close();
             } catch (SQLException e) {
@@ -121,8 +119,5 @@ public class StudentDbUtil {
             } catch (SQLException e) {
                 // ignore
             }
-
-        }
-
     }
 }
