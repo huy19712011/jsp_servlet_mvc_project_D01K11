@@ -6,6 +6,7 @@ package controllers;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -59,29 +60,31 @@ public class StudentControllerServlet extends HttpServlet {
             String theCommand = request.getParameter("command");
 
             //
-            if (theCommand == null) theCommand = "LIST"; // get all
-
+            if (theCommand == null) {
+                theCommand = "LIST"; // get all
+            }
             switch (theCommand) {
 
                 case "LIST":
-                   listStudents(request, response);
-                   break;
+                    listStudents(request, response);
+                    break;
                 case "ADD":
-                   addStudent(request, response);
-                   break;
+                    addStudent(request, response);
+                    break;
                 case "LOAD":
-                   loadStudent(request, response);
-                   break;
+                    loadStudent(request, response);
+                    break;
                 case "UPDATE":
-                   updateStudent(request, response);
-                   break;
+                    updateStudent(request, response);
+                    break;
                 case "DELETE":
-                   deleteStudent(request, response);
-                   break;
+                    deleteStudent(request, response);
+                    break;
+                // for searching example
+                case "SEARCH":
+                    searchStudent(request, response);
+                    break;
             }
-
-
-
 
         } catch (Exception ex) {
 
@@ -207,7 +210,26 @@ public class StudentControllerServlet extends HttpServlet {
         // back to list
         response.sendRedirect(request.getContextPath() + "/StudentControllerServlet?command=LIST");
 
+    }
 
+    private void searchStudent(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        // Here we get all students from database, then filter before sending to view
+
+        List<Student> students = studentDbUtil.getStudents();
+
+        int min = Integer.parseInt(request.getParameter("min"));
+        int max = Integer.parseInt(request.getParameter("max"));
+
+        List<Student> filteredStudents = students.stream()
+                .filter(s -> ((s.getId() - min) * (s.getId() - max)) <= 0)
+                .collect(Collectors.toList());
+
+        request.setAttribute("STUDENT_LIST", filteredStudents);
+
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/views/list-students.jsp");
+
+        dispatcher.forward(request, response);
     }
 
 }

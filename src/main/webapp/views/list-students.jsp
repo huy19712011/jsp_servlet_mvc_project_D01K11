@@ -15,26 +15,37 @@
         <title>Student List</title>
         <link type="text/css" rel="stylesheet" href="css/style.css"/>
     </head>
-    
+
     <%
         // get students from request obj
         List<Student> theStudents = (List<Student>) request.getAttribute("STUDENT_LIST");
     %>
-    
+
     <body>
         <div id="wrapper">
-            
+
             <div id="header">
                 <h2>BK Academy</h2>
             </div>
-            
+
             <div id="container">
                 <div id="content">
-                    
+
+                    <!--adding this form to search student with id: min < id < max-->
+                    <!--only for example--> 
+                    <form action="StudentControllerServlet">
+                        From: <input type="number" name="min" />
+                        To: <input type="number" name="max" />
+                        <input type="submit" value="Search"/>
+                        
+                        <input type="hidden" name="command" value="SEARCH"/>
+                    </form>
+                    <br>
+
                     <input type="button" value="Add Student"
-                           onclick="window.location.href='views/add-student-form.jsp'; return false;"
+                           onclick="window.location.href = 'views/add-student-form.jsp'; return false;"
                            class="add-student-button"/>
-                    
+
                     <table>
                         <tr>
                             <th>First Name</th>
@@ -43,19 +54,19 @@
                             <th>Action</th>
                         </tr>
                         <c:forEach var="tempStudent" items="${STUDENT_LIST}">
-                            
+
                             <!--set up link for each student-->
                             <c:url var="tempLink" value="StudentControllerServlet">
                                 <c:param name="command" value="LOAD"/>
                                 <c:param name="studentId" value="${tempStudent.id}"/>
                             </c:url>
-                            
+
                             <!--set up link for delete-->
                             <c:url var="deleteLink" value="StudentControllerServlet">
                                 <c:param name="command" value="DELETE"/>
                                 <c:param name="studentId" value="${tempStudent.id}"/>
                             </c:url>
-                            
+
                             <tr>
                                 <td>${tempStudent.firstName}</td>
                                 <td>${tempStudent.lastName}</td>
@@ -64,15 +75,16 @@
                                     <a href="${tempLink}">Update</a>
                                     |
                                     <a href="${deleteLink}" 
-                                       onclick="if (!(confirm('Are you sure?'))) return false">Delete</a>
+                                       onclick="if (!(confirm('Are you sure?')))
+                                                   return false">Delete</a>
                                 </td>
                             </tr>
                         </c:forEach>
                     </table>
-                    
+
                 </div>
             </div>
-            
+
         </div>
     </body>
 </html>
