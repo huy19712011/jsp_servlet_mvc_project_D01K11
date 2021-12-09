@@ -75,6 +75,9 @@ public class StudentControllerServlet extends HttpServlet {
                 case "UPDATE":
                    updateStudent(request, response);
                    break;
+                case "DELETE":
+                   deleteStudent(request, response);
+                   break;
             }
 
 
@@ -190,6 +193,20 @@ public class StudentControllerServlet extends HttpServlet {
 
         // back to list
         response.sendRedirect(request.getContextPath() + "/StudentControllerServlet?command=LIST");
+
+    }
+
+    private void deleteStudent(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        // read id from form
+        String theStudentId = request.getParameter("studentId");
+
+        // delete from db
+        studentDbUtil.deleteStudent(theStudentId);
+
+        // back to list
+        response.sendRedirect(request.getContextPath() + "/StudentControllerServlet?command=LIST");
+
 
     }
 

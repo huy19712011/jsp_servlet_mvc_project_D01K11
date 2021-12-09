@@ -198,4 +198,40 @@ public class StudentDbUtil {
         }
 
     }
+
+    public void deleteStudent(String theStudentId) throws Exception {
+
+        Connection myConn = null;
+        PreparedStatement myStmt = null;
+
+        try {
+
+            // convert id to int
+            int studentId = Integer.parseInt(theStudentId);
+
+            myConn = dataSource.getConnection();
+
+            // sql
+            String sql = "DELETE FROM student WHERE id=?";
+
+            // statement
+            myStmt = myConn.prepareStatement(sql);
+
+            // set params
+            myStmt.setInt(1, studentId);
+
+            myStmt.execute();
+
+        } finally {
+
+            close(myConn, myStmt, null);
+        }
+    }
+
+    public void searchStudents() throws Exception {
+
+        List<Student> allStudents = getStudents();
+        allStudents.stream()
+                .filter(s -> (s.getId() - 100) * (s.getId() - 200) <= 0 );//> 100 and < 200
+    }
 }
